@@ -10,6 +10,7 @@ type Business = {
   email: string | null;
   address: string | null;
   logoUrl: string | null;
+  coverImageUrl: string | null;
 };
 
 const inputClass =
@@ -112,19 +113,59 @@ export default function NegocioClient({
 
             <div>
               <label className="mb-2 block text-sm text-stone-400">
-                URL del logo
+                Logo
               </label>
 
+              {initialBusiness.logoUrl && (
+                <div className="mb-3">
+                  <img
+                    src={initialBusiness.logoUrl}
+                    alt="Logo actual"
+                    className="h-24 w-24 rounded-xl border border-stone-700 object-cover"
+                  />
+                </div>
+              )}
+
               <input
-                type="url"
-                name="logoUrl"
-                defaultValue={initialBusiness.logoUrl ?? ""}
-                placeholder="https://..."
-                className={inputClass}
+                type="file"
+                name="logo"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                className="block w-full cursor-pointer rounded-lg border border-stone-700 bg-stone-800 text-sm text-stone-300 file:mr-4 file:border-0 file:bg-amber-400 file:px-4 file:py-2.5 file:font-semibold file:text-stone-950 hover:file:bg-amber-300"
               />
+
+              <p className="mt-2 text-xs text-stone-500">
+                PNG, JPG, WEBP o GIF.
+              </p>
             </div>
+            <div>
+            <label className="mb-2 block text-sm text-stone-400">
+              Imagen de presentación
+            </label>
+
+            {initialBusiness.coverImageUrl && (
+              <div className="mb-3">
+                <img
+                  src={initialBusiness.coverImageUrl}
+                  alt="Imagen de presentación actual"
+                  className="h-40 w-full rounded-xl border border-stone-700 object-cover"
+                />
+              </div>
+            )}
+
+            <input
+              type="file"
+              name="cover"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              className="block w-full cursor-pointer rounded-lg border border-stone-700 bg-stone-800 text-sm text-stone-300 file:mr-4 file:border-0 file:bg-amber-400 file:px-4 file:py-2.5 file:font-semibold file:text-stone-950 hover:file:bg-amber-300"
+            />
+
+            <p className="mt-2 text-xs text-stone-500">
+              Recomendado: imagen horizontal. PNG, JPG, WEBP o GIF. Máximo 5 MB.
+            </p>
+          </div>
           </div>
         </div>
+        
 
         {state && !state.success && (
           <p className="mt-4 text-sm text-red-400">

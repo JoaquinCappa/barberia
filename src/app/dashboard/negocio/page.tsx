@@ -22,6 +22,7 @@ export default async function NegocioPage() {
       email: true,
       address: true,
       logoUrl: true,
+      coverImageUrl: true,
     },
   });
 

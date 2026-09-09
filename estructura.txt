@@ -1,0 +1,130 @@
+Listado de rutas de carpetas para el volumen Windows-SSD
+El número de serie del volumen es 32D7-60FF
+C:\USERS\JOAQU\ONEDRIVE\BARBERIA\SRC
++---app
+¦   ¦   favicon.ico
+¦   ¦   globals.css
+¦   ¦   layout.tsx
+¦   ¦   page.tsx
+¦   ¦   
+¦   +---admin
+¦   ¦   +---invitaciones
+¦   ¦           InvitacionesPanel.tsx
+¦   ¦           page.tsx
+¦   ¦           
+¦   +---api
+¦   ¦   +---admin
+¦   ¦   +---auth
+¦   ¦   ¦   +---[...nextauth]
+¦   ¦   ¦           route.ts
+¦   ¦   ¦           
+¦   ¦   +---bookings
+¦   ¦   ¦       route.ts
+¦   ¦   ¦       
+¦   ¦   +---disponibilidad
+¦   ¦           route.ts
+¦   ¦           
+¦   +---b
+¦   ¦   +---[slug]
+¦   ¦           BookingWidget.tsx
+¦   ¦           page.tsx
+¦   ¦           
+¦   +---cliente
+¦   ¦       page.tsx
+¦   ¦       
+¦   +---crear-negocio
+¦   ¦       CrearNegocioForm.tsx
+¦   ¦       page.tsx
+¦   ¦       
+¦   +---cuenta
+¦   ¦       CancelBookingButton.tsx
+¦   ¦       page.tsx
+¦   ¦       
+¦   +---dashboard
+¦   ¦   ¦   layout.tsx
+¦   ¦   ¦   page.tsx
+¦   ¦   ¦   
+¦   ¦   +---bloqueos
+¦   ¦   ¦       bloqueosClient.tsx
+¦   ¦   ¦       page.tsx
+¦   ¦   ¦       
+¦   ¦   +---clientes
+¦   ¦   ¦       ClientesClient.tsx
+¦   ¦   ¦       page.tsx
+¦   ¦   ¦       
+¦   ¦   +---horarios
+¦   ¦   ¦       HorariosClient.tsx
+¦   ¦   ¦       page.tsx
+¦   ¦   ¦       
+¦   ¦   +---negocio
+¦   ¦   ¦       NegocioClient.tsx
+¦   ¦   ¦       page.tsx
+¦   ¦   ¦       
+¦   ¦   +---personalizacion
+¦   ¦   ¦       page.tsx
+¦   ¦   ¦       PersonalizacionClient.tsx
+¦   ¦   ¦       
+¦   ¦   +---profesionales
+¦   ¦   ¦       page.tsx
+¦   ¦   ¦       ProfesionalesClient.tsx
+¦   ¦   ¦       
+¦   ¦   +---reservas
+¦   ¦   ¦       page.tsx
+¦   ¦   ¦       ReservasClient.tsx
+¦   ¦   ¦       
+¦   ¦   +---servicios
+¦   ¦           page.tsx
+¦   ¦           ServiciosClient.tsx
+¦   ¦           
+¦   +---login
+¦   ¦       page.tsx
+¦   ¦       
+¦   +---negocio
+¦   ¦   +---login
+¦   ¦           page.tsx
+¦   ¦           
+¦   +---registro
+¦   ¦       page.tsx
+¦   ¦       
+¦   +---reservar
+¦   ¦   ¦   page.tsx
+¦   ¦   ¦   
+¦   ¦   +---[slug]
+¦   ¦       ¦   layout.tsx
+¦   ¦       ¦   page.tsx
+¦   ¦       ¦   
+¦   ¦       +---[serviceId]
+¦   ¦           ¦   page.tsx
+¦   ¦           ¦   
+¦   ¦           +---[barberId]
+¦   ¦                   AvailabilityPicker.tsx
+¦   ¦                   BookingSelector.tsx
+¦   ¦                   page.tsx
+¦   ¦                   
+¦   +---setup
+¦           page.tsx
+¦           
++---lib
+¦   ¦   admin.ts
+¦   ¦   auth.ts
+¦   ¦   availability.ts
+¦   ¦   business-theme.ts
+¦   ¦   prisma.ts
+¦   ¦   publicTheme.ts
+¦   ¦   
+¦   +---actions
+¦           barbers.ts
+¦           blockedTimes.ts
+¦           bookings.ts
+¦           business-auth.ts
+¦           business-invitations.ts
+¦           business.ts
+¦           customer-auth.ts
+¦           hours.ts
+¦           services.ts
+¦           setup.ts
+¦           theme.ts
+¦           
++---types
+        next-auth.d.ts
+        
