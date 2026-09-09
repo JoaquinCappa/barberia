@@ -1,12 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
+import { Suspense, useActionState } from "react";
 import { useSearchParams } from "next/navigation";
 import { registerBusiness } from "@/lib/actions/business-auth";
 
 const initialState = null;
 
-export default function CrearNegocioPage() {
+function CrearNegocioForm() {
   const searchParams = useSearchParams();
   const code = searchParams.get("code") ?? "";
 
@@ -19,7 +19,6 @@ export default function CrearNegocioPage() {
     <main className="min-h-screen bg-stone-950 px-5 py-10 text-stone-100 sm:px-8 lg:px-10">
       <div className="mx-auto w-full max-w-2xl">
 
-        {/* ENCABEZADO */}
         <div className="mb-10">
           <p className="text-sm font-semibold tracking-[0.2em] text-amber-400">
             AGENDA
@@ -35,7 +34,6 @@ export default function CrearNegocioPage() {
           </p>
         </div>
 
-        {/* ERROR */}
         {state?.success === false && (
           <div className="mb-6 rounded-xl border border-red-900 bg-red-950/40 px-4 py-3">
             <p className="text-sm text-red-300">
@@ -44,7 +42,6 @@ export default function CrearNegocioPage() {
           </div>
         )}
 
-        {/* ÉXITO */}
         {state?.success === true && (
           <div className="rounded-2xl border border-emerald-900 bg-emerald-950/40 p-6">
             <p className="text-sm font-semibold text-emerald-400">
@@ -68,18 +65,15 @@ export default function CrearNegocioPage() {
           </div>
         )}
 
-        {/* FORMULARIO */}
         {!state?.success && (
           <form action={formAction} className="space-y-10">
 
-            {/* CÓDIGO */}
             <input
               type="hidden"
               name="code"
               value={code}
             />
 
-            {/* NEGOCIO */}
             <section>
               <p className="text-sm font-semibold tracking-[0.2em] text-amber-400">
                 NEGOCIO
@@ -143,10 +137,10 @@ export default function CrearNegocioPage() {
                     className="mt-2 w-full rounded-xl border border-stone-800 bg-stone-900 px-4 py-3 text-sm outline-none transition placeholder:text-stone-600 focus:border-amber-400"
                   />
                 </div>
+
               </div>
             </section>
 
-            {/* ADMINISTRADOR */}
             <section>
               <p className="text-sm font-semibold tracking-[0.2em] text-amber-400">
                 TUS DATOS
@@ -204,7 +198,7 @@ export default function CrearNegocioPage() {
                     type="tel"
                     required
                     placeholder="261 555 5555"
-                    className="mt-2 w-full rounded-xl border border-stone-800 bg-stone-900 px-4 py-3 text-sm outline-none transition placeholder:text-stone-600"
+                    className="mt-2 w-full rounded-xl border border-stone-800 bg-stone-900 px-4 py-3 text-sm outline-none transition placeholder:text-stone-600 focus:border-amber-400"
                   />
                 </div>
 
@@ -226,10 +220,10 @@ export default function CrearNegocioPage() {
                     className="mt-2 w-full rounded-xl border border-stone-800 bg-stone-900 px-4 py-3 text-sm outline-none transition placeholder:text-stone-600 focus:border-amber-400"
                   />
                 </div>
+
               </div>
             </section>
 
-            {/* BOTÓN */}
             <button
               type="submit"
               disabled={pending || !code}
@@ -248,5 +242,21 @@ export default function CrearNegocioPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function CrearNegocioPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="grid min-h-screen place-items-center bg-stone-950 text-stone-100">
+          <p className="text-sm text-stone-400">
+            Cargando...
+          </p>
+        </main>
+      }
+    >
+      <CrearNegocioForm />
+    </Suspense>
   );
 }
