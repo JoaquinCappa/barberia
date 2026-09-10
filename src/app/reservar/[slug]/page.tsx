@@ -1,5 +1,14 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Clock,
+  MapPin,
+  Phone,
+  Scissors,
+} from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import {
   defaultBusinessTheme,
@@ -29,7 +38,6 @@ export default async function BarberiaPage({ params }: Props) {
       coverImageUrl: true,
       address: true,
       phone: true,
-
       theme: true,
 
       services: {
@@ -62,132 +70,195 @@ export default async function BarberiaPage({ params }: Props) {
   const radius = getThemeRadius(theme.borderRadius);
   const font = getThemeFont(theme.fontFamily);
 
-  const buttonClass =
-    theme.buttonStyle === "outline"
-      ? "border-2 bg-transparent"
-      : "border-2";
+  const isOutlineButton = theme.buttonStyle === "outline";
 
   return (
     <main
-      className="min-h-screen px-5 py-10 sm:px-8 lg:px-10"
+      className="min-h-screen px-4 py-6 sm:px-6 sm:py-10 lg:px-8"
       style={{
         backgroundColor: theme.backgroundColor,
         color: theme.textColor,
         fontFamily: font,
       }}
     >
-      <div className="mx-auto w-full max-w-5xl">
-
-        {/* Volver */}
+      <div className="mx-auto w-full max-w-6xl">
+        {/* Navegación */}
         <Link
           href="/reservar"
-          className="text-sm opacity-60 transition hover:opacity-100"
+          className="group inline-flex items-center gap-2 text-sm transition-opacity hover:opacity-100"
           style={{
             color: theme.textColor,
+            opacity: 0.65,
           }}
         >
-          ← Volver a barberías
+          <ArrowLeft size={16} />
+          Volver a barberías
         </Link>
 
-        {/* Cabecera */}
-        <div
-          className="mt-8 overflow-hidden border"
+        {/* Cabecera principal */}
+        <section
+          className="mt-6 overflow-hidden border shadow-sm sm:mt-8"
           style={{
             borderRadius: radius,
             borderColor: theme.surfaceColor,
             backgroundColor: theme.surfaceColor,
           }}
         >
+          {/* Portada */}
           <div
-            className="flex h-48 items-center justify-center sm:h-56"
+            className="relative h-56 overflow-hidden sm:h-72 lg:h-80"
             style={{
               backgroundColor: theme.backgroundColor,
             }}
           >
             {business.coverImageUrl ? (
-              <img
+              <Image
                 src={business.coverImageUrl}
-                alt={business.name}
-                className="h-full w-full object-cover"
+                alt={`Portada de ${business.name}`}
+                fill
+                priority
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1152px"
+                className="object-cover"
               />
             ) : business.logoUrl ? (
-              <img
-                src={business.logoUrl}
-                alt={business.name}
-                className="h-full w-full object-cover"
-              />
+              <div className="relative h-full w-full">
+                <Image
+                  src={business.logoUrl}
+                  alt={`Logo de ${business.name}`}
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1152px"
+                  className="object-contain p-10 sm:p-16"
+                />
+              </div>
             ) : (
-              <span
-                className="text-6xl font-semibold"
-                style={{
-                  color: theme.primaryColor,
-                }}
-              >
-                {business.name.charAt(0).toUpperCase()}
-              </span>
+              <div className="flex h-full items-center justify-center">
+                <Scissors
+                  size={72}
+                  strokeWidth={1.2}
+                  style={{
+                    color: theme.primaryColor,
+                  }}
+                />
+              </div>
             )}
-          </div>
 
-          <div className="p-6 sm:p-8">
-            <h1
-              className="text-3xl font-semibold tracking-tight sm:text-4xl"
+            {/* Degradado inferior para mejorar la lectura visual */}
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
               style={{
-                color: theme.primaryColor,
+                background:
+                  "linear-gradient(to top, rgba(0,0,0,0.45), transparent)",
               }}
-            >
-              {business.name}
-            </h1>
-
-            {business.description && (
-              <p
-                className="mt-3 max-w-2xl text-sm leading-6 sm:text-base"
-                style={{
-                  opacity: 0.7,
-                }}
-              >
-                {business.description}
-              </p>
-            )}
-
-            {theme.showAddress && business.address && (
-              <p
-                className="mt-4 text-sm"
-                style={{
-                  opacity: 0.6,
-                }}
-              >
-                {business.address}
-              </p>
-            )}
-
-            {theme.showPhone && business.phone && (
-              <p
-                className="mt-2 text-sm"
-                style={{
-                  opacity: 0.6,
-                }}
-              >
-                {business.phone}
-              </p>
-            )}
+            />
           </div>
-        </div>
+
+          {/* Información */}
+          <div className="p-6 sm:p-8 lg:p-10">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-3xl">
+                <div
+                  className="mb-3 flex items-center gap-2 text-xs font-semibold tracking-[0.24em]"
+                  style={{
+                    color: theme.primaryColor,
+                  }}
+                >
+                  <Scissors size={15} />
+                  BARBERÍA
+                </div>
+
+                <h1
+                  className="text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl"
+                  style={{
+                    color: theme.primaryColor,
+                  }}
+                >
+                  {business.name}
+                </h1>
+
+                {business.description && (
+                  <p
+                    className="mt-4 max-w-2xl text-sm leading-7 sm:text-base"
+                    style={{
+                      opacity: 0.72,
+                    }}
+                  >
+                    {business.description}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-3 text-sm">
+                {theme.showAddress && business.address && (
+                  <div className="flex items-start gap-3">
+                    <MapPin
+                      size={17}
+                      className="mt-0.5 shrink-0"
+                      style={{
+                        color: theme.primaryColor,
+                      }}
+                    />
+
+                    <span
+                      style={{
+                        opacity: 0.7,
+                      }}
+                    >
+                      {business.address}
+                    </span>
+                  </div>
+                )}
+
+                {theme.showPhone && business.phone && (
+                  <div className="flex items-center gap-3">
+                    <Phone
+                      size={17}
+                      className="shrink-0"
+                      style={{
+                        color: theme.primaryColor,
+                      }}
+                    />
+
+                    <span
+                      style={{
+                        opacity: 0.7,
+                      }}
+                    >
+                      {business.phone}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Servicios */}
-        <div className="mt-10">
-          <div className="mb-5">
-            <p
-              className="text-sm font-semibold tracking-[0.2em]"
+        <section className="mt-12 sm:mt-16">
+          <div className="mb-6">
+            <div
+              className="flex items-center gap-2 text-xs font-semibold tracking-[0.24em]"
               style={{
                 color: theme.primaryColor,
               }}
             >
+              <Scissors size={15} />
               SERVICIOS
-            </p>
+            </div>
 
-            <h2 className="mt-2 text-2xl font-semibold">
+            <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
               Elegí tu servicio
             </h2>
+
+            <p
+              className="mt-2 max-w-xl text-sm leading-6"
+              style={{
+                opacity: 0.6,
+              }}
+            >
+              Seleccioná el servicio que querés realizar y elegí el horario
+              disponible.
+            </p>
           </div>
 
           {business.services.length === 0 ? (
@@ -199,6 +270,14 @@ export default async function BarberiaPage({ params }: Props) {
                 backgroundColor: theme.surfaceColor,
               }}
             >
+              <Scissors
+                size={32}
+                className="mx-auto mb-3"
+                style={{
+                  color: theme.primaryColor,
+                }}
+              />
+
               <p className="text-sm opacity-60">
                 Esta barbería todavía no tiene servicios disponibles.
               </p>
@@ -206,72 +285,96 @@ export default async function BarberiaPage({ params }: Props) {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {business.services.map((service) => (
-                <div
+                <article
                   key={service.id}
-                  className="border p-5 transition"
+                  className="group flex flex-col justify-between border p-5 transition duration-200 hover:-translate-y-1 sm:p-6"
                   style={{
                     borderRadius: radius,
                     borderColor: theme.backgroundColor,
                     backgroundColor: theme.surfaceColor,
                   }}
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 className="font-semibold">
+                  <div>
+                    <div className="flex items-start justify-between gap-4">
+                      <h3 className="text-lg font-semibold leading-6">
                         {service.name}
                       </h3>
 
-                      {service.description && (
-                        <p className="mt-2 text-sm leading-5 opacity-60">
-                          {service.description}
-                        </p>
+                      {theme.showPrices && (
+                        <span
+                          className="shrink-0 text-base font-semibold"
+                          style={{
+                            color: theme.primaryColor,
+                          }}
+                        >
+                          $
+                          {(service.priceInCents / 100).toLocaleString(
+                            "es-AR",
+                          )}
+                        </span>
                       )}
                     </div>
 
-                    {theme.showPrices && (
-                      <span
-                        className="shrink-0 font-semibold"
+                    {service.description && (
+                      <p
+                        className="mt-3 text-sm leading-6"
                         style={{
-                          color: theme.primaryColor,
+                          opacity: 0.6,
                         }}
                       >
-                        $
-                        {(service.priceInCents / 100).toLocaleString(
-                          "es-AR",
-                        )}
-                      </span>
+                        {service.description}
+                      </p>
                     )}
                   </div>
 
-                  <div className="mt-5 flex items-center justify-between">
-                    <span className="text-xs opacity-50">
-                      {service.durationMinutes} min
-                    </span>
+                  <div className="mt-7 flex items-center justify-between gap-4">
+                    <div
+                      className="flex items-center gap-2 text-xs"
+                      style={{
+                        opacity: 0.55,
+                      }}
+                    >
+                      <Clock size={15} />
+                      {service.durationMinutes} minutos
+                    </div>
 
                     <Link
                       href={`/reservar/${business.slug}/${service.id}`}
-                      className={`${buttonClass} px-4 py-2.5 text-sm font-semibold transition`}
+                      className="group/button inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition hover:opacity-90"
                       style={{
                         borderRadius: radius,
-                        borderColor: theme.primaryColor,
-                        backgroundColor:
-                          theme.buttonStyle === "outline"
-                            ? "transparent"
-                            : theme.primaryColor,
-                        color:
-                          theme.buttonStyle === "outline"
-                            ? theme.primaryColor
-                            : theme.backgroundColor,
+                        border: `1px solid ${theme.primaryColor}`,
+                        backgroundColor: isOutlineButton
+                          ? "transparent"
+                          : theme.primaryColor,
+                        color: isOutlineButton
+                          ? theme.primaryColor
+                          : theme.backgroundColor,
                       }}
                     >
                       Elegir
+                      <ArrowRight
+                        size={16}
+                        className="transition-transform group-hover/button:translate-x-1"
+                      />
                     </Link>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           )}
-        </div>
+        </section>
+
+        {/* Pie de página */}
+        <footer
+          className="mt-14 border-t py-6 text-center text-xs sm:mt-20"
+          style={{
+            borderColor: theme.surfaceColor,
+            opacity: 0.5,
+          }}
+        >
+          Reservá tu turno de forma rápida y sencilla.
+        </footer>
       </div>
     </main>
   );

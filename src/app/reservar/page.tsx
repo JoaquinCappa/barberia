@@ -66,7 +66,7 @@ export default async function ReservarPage() {
                     <img
                       src={business.logoUrl}
                       alt={business.name}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-contain p-4"
                     />
                   ) : (
                     <span className="text-4xl font-semibold text-stone-600">
