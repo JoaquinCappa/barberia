@@ -22,7 +22,7 @@ export default async function ReservarPage() {
         {/* Header */}
         <div className="mb-10">
           <Link
-            href="/mi-cuenta"
+            href="/cuenta"
             className="text-sm text-stone-500 transition hover:text-stone-300"
           >
             ← Volver a mi cuenta

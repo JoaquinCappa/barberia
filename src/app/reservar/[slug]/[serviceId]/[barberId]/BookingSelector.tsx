@@ -135,10 +135,6 @@ export default function BookingSelector({
   const [error, setError] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
 
-  // ============================================================
-  // CARGAR HORARIOS
-  // ============================================================
-
   useEffect(() => {
     async function loadSlots() {
       setLoading(true);
@@ -184,18 +180,10 @@ export default function BookingSelector({
     loadSlots();
   }, [selectedDate, businessId, barberId, serviceId]);
 
-  // ============================================================
-  // SELECCIONAR FECHA
-  // ============================================================
-
   function selectDate(date: string) {
     setSelectedDate(date);
     setSelectedSlot(null);
   }
-
-  // ============================================================
-  // CALENDARIO
-  // ============================================================
 
   const calendarDays = useMemo(() => {
     const year = calendarMonth.getFullYear();
@@ -205,8 +193,6 @@ export default function BookingSelector({
 
     let firstDayIndex = firstDay.getDay();
 
-    // Domingo = 0.
-    // Queremos que la semana empiece en lunes.
     firstDayIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
 
     const daysInMonth = new Date(
@@ -270,10 +256,6 @@ export default function BookingSelector({
     return candidate < today;
   }
 
-  // ============================================================
-  // CONFIRMAR TURNO
-  // ============================================================
-
   async function handleConfirm() {
     if (!selectedSlot || confirming) {
       return;
@@ -322,38 +304,28 @@ export default function BookingSelector({
     }
   }
 
-  // ============================================================
-  // ESTILOS DEL TEMA
-  // ============================================================
-
   const themePrimary = "var(--theme-primary)";
   const themeBackground = "var(--theme-background)";
   const themeSurface = "var(--theme-surface)";
   const themeText = "var(--theme-text)";
 
-  // ============================================================
-  // RENDER
-  // ============================================================
-
   return (
     <section
-      className="mt-12"
+      className="mt-8 sm:mt-12"
       style={
         {
           color: themeText,
         } as React.CSSProperties
       }
     >
-      {/* FECHA */}
-
       <p
-        className="text-sm font-semibold tracking-[0.2em]"
+        className="text-xs font-semibold tracking-[0.2em] sm:text-sm"
         style={{ color: themePrimary }}
       >
         FECHA
       </p>
 
-      <h2 className="mt-2 text-2xl font-semibold">
+      <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">
         Elegí el día
       </h2>
 
@@ -366,81 +338,71 @@ export default function BookingSelector({
         Seleccioná cuándo querés reservar tu turno.
       </p>
 
-      {/* CONTENEDOR */}
-
       <div
-        className="relative mt-6 rounded-2xl border p-5 sm:p-8"
+        className="relative mt-5 rounded-2xl border p-3 sm:mt-6 sm:p-8"
         style={{
           backgroundColor: themeSurface,
           borderColor: `color-mix(in srgb, ${themeText} 12%, transparent)`,
         }}
       >
-        {/* ====================================================
-            DÍAS
-        ==================================================== */}
+        {/* DÍAS */}
 
-        <div className="flex items-start gap-4">
-          <div className="min-w-0 flex-1">
-            <div className="flex gap-2 overflow-x-auto pb-2 sm:grid sm:grid-cols-4 sm:overflow-visible lg:grid-cols-7">
-              {days.map((day) => {
-                const selected = selectedDate === day.date;
+        <div className="min-w-0">
+          <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-3 pr-3 sm:grid sm:grid-cols-4 sm:overflow-visible sm:pb-0 lg:grid-cols-7">
+            {days.map((day) => {
+              const selected = selectedDate === day.date;
 
-                return (
-                  <button
-                    key={day.date}
-                    type="button"
-                    onClick={() => selectDate(day.date)}
-                    className="min-w-[72px] shrink-0 rounded-xl border px-3 py-3 text-center transition sm:min-w-0 sm:rounded-2xl sm:p-4 sm:text-left"
+              return (
+                <button
+                  key={day.date}
+                  type="button"
+                  onClick={() => selectDate(day.date)}
+                  className="min-w-[76px] shrink-0 snap-start rounded-xl border px-2 py-3 text-center transition sm:min-w-0 sm:rounded-2xl sm:p-4 sm:text-left"
+                  style={{
+                    backgroundColor: selected
+                      ? themePrimary
+                      : themeBackground,
+                    borderColor: selected
+                      ? themePrimary
+                      : `color-mix(in srgb, ${themeText} 12%, transparent)`,
+                    color: selected
+                      ? themeBackground
+                      : themeText,
+                  }}
+                >
+                  <p
+                    className="text-[11px] font-medium uppercase sm:text-xs"
                     style={{
-                      backgroundColor: selected
-                        ? themePrimary
-                        : themeBackground,
-                      borderColor: selected
-                        ? themePrimary
-                        : `color-mix(in srgb, ${themeText} 12%, transparent)`,
-                      color: selected
-                        ? themeBackground
-                        : themeText,
+                      opacity: selected ? 1 : 0.55,
                     }}
                   >
-                    <p
-                      className="text-xs font-medium uppercase"
-                      style={{
-                        opacity: selected ? 1 : 0.55,
-                      }}
-                    >
-                      {day.dayName}
-                    </p>
+                    {day.dayName}
+                  </p>
 
-                    <p className="mt-2 text-2xl font-semibold">
-                      {day.dayNumber}
-                    </p>
+                  <p className="mt-1 text-2xl font-semibold sm:mt-2">
+                    {day.dayNumber}
+                  </p>
 
-                    <p
-                      className="mt-1 text-xs"
-                      style={{
-                        opacity: selected ? 1 : 0.55,
-                      }}
-                    >
-                      {day.month}
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
+                  <p
+                    className="mt-1 text-[11px] sm:text-xs"
+                    style={{
+                      opacity: selected ? 1 : 0.55,
+                    }}
+                  >
+                    {day.month}
+                  </p>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* ====================================================
-            BOTÓN CALENDARIO
-        ==================================================== */}
+        {/* CALENDARIO */}
 
         <button
           type="button"
-          onClick={() =>
-            setCalendarOpen((value) => !value)
-          }
-          className="mt-4 flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition"
+          onClick={() => setCalendarOpen((value) => !value)}
+          className="mt-3 flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition sm:mt-4"
           style={{
             backgroundColor: calendarOpen
               ? themePrimary
@@ -460,6 +422,7 @@ export default function BookingSelector({
             fill="none"
             stroke="currentColor"
             strokeWidth="1.8"
+            aria-hidden="true"
           >
             <rect
               x="3"
@@ -475,24 +438,19 @@ export default function BookingSelector({
           Calendario
         </button>
 
-        {/* ====================================================
-            CALENDARIO
-        ==================================================== */}
-
         {calendarOpen && (
           <div
-            className="mt-4 rounded-2xl border p-5"
+            className="mt-4 rounded-2xl border p-4 sm:p-5"
             style={{
               backgroundColor: themeBackground,
               borderColor: `color-mix(in srgb, ${themeText} 12%, transparent)`,
             }}
           >
-            {/* CABECERA */}
-
             <div className="flex items-center justify-between">
               <button
                 type="button"
                 onClick={previousMonth}
+                aria-label="Mes anterior"
                 className="h-9 w-9 rounded-lg transition"
                 style={{
                   color: themeText,
@@ -511,6 +469,7 @@ export default function BookingSelector({
               <button
                 type="button"
                 onClick={nextMonth}
+                aria-label="Mes siguiente"
                 className="h-9 w-9 rounded-lg transition"
                 style={{
                   color: themeText,
@@ -519,8 +478,6 @@ export default function BookingSelector({
                 →
               </button>
             </div>
-
-            {/* DÍAS DE LA SEMANA */}
 
             <div className="mt-5 grid grid-cols-7 gap-1 text-center">
               {[
@@ -543,8 +500,6 @@ export default function BookingSelector({
                 </p>
               ))}
             </div>
-
-            {/* DÍAS */}
 
             <div className="mt-1 grid grid-cols-7 gap-1">
               {calendarDays.map((date, index) => {
@@ -603,26 +558,23 @@ export default function BookingSelector({
                   opacity: 0.45,
                 }}
               >
-                Seleccioná una fecha para verla entre
-                los próximos días.
+                Seleccioná una fecha para verla entre los próximos días.
               </p>
             </div>
           </div>
         )}
 
-        {/* ====================================================
-            HORARIOS
-        ==================================================== */}
+        {/* HORARIOS */}
 
-        <div className="mt-10">
+        <div className="mt-8 sm:mt-10">
           <p
-            className="text-sm font-semibold tracking-[0.2em]"
+            className="text-xs font-semibold tracking-[0.2em] sm:text-sm"
             style={{ color: themePrimary }}
           >
             HORARIOS
           </p>
 
-          <h3 className="mt-2 text-2xl font-semibold">
+          <h3 className="mt-2 text-2xl font-semibold sm:text-3xl">
             Elegí el horario
           </h3>
 
@@ -657,39 +609,54 @@ export default function BookingSelector({
               </p>
             </div>
           ) : (
-            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-              {slots.map((slot) => {
-                const selected = selectedSlot === slot;
+            <>
+              {slots.length === 1 && (
+                <p
+                  className="mt-4 text-sm font-medium"
+                  style={{ color: themePrimary }}
+                >
+                  Queda un solo horario disponible para este día.
+                </p>
+              )}
 
-                return (
-                  <button
-                    key={slot}
-                    type="button"
-                    onClick={() => setSelectedSlot(slot)}
-                    className="rounded-xl border px-4 py-4 text-sm font-medium transition"
-                    style={{
-                      backgroundColor: selected
-                        ? themePrimary
-                        : themeBackground,
-                      borderColor: selected
-                        ? themePrimary
-                        : `color-mix(in srgb, ${themeText} 12%, transparent)`,
-                      color: selected
-                        ? themeBackground
-                        : themeText,
-                    }}
-                  >
-                    {formatTime(slot)}
-                  </button>
-                );
-              })}
-            </div>
+              <div
+                className={`mt-5 grid gap-3 ${
+                  slots.length === 1
+                    ? "grid-cols-1"
+                    : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+                }`}
+              >
+                {slots.map((slot) => {
+                  const selected = selectedSlot === slot;
+
+                  return (
+                    <button
+                      key={slot}
+                      type="button"
+                      onClick={() => setSelectedSlot(slot)}
+                      className="w-full rounded-xl border px-4 py-4 text-sm font-medium transition"
+                      style={{
+                        backgroundColor: selected
+                          ? themePrimary
+                          : themeBackground,
+                        borderColor: selected
+                          ? themePrimary
+                          : `color-mix(in srgb, ${themeText} 12%, transparent)`,
+                        color: selected
+                          ? themeBackground
+                          : themeText,
+                      }}
+                    >
+                      {formatTime(slot)}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
           )}
         </div>
 
-        {/* ====================================================
-            ERROR
-        ==================================================== */}
+        {/* ERROR */}
 
         {error && (
           <div
@@ -703,14 +670,12 @@ export default function BookingSelector({
           </div>
         )}
 
-        {/* ====================================================
-            CONFIRMAR
-        ==================================================== */}
+        {/* CONFIRMACIÓN */}
 
         {selectedSlot && !confirmed && (
           <div className="mt-8">
             <div
-              className="mb-4 rounded-xl border p-4"
+              className="mb-4 rounded-2xl border p-4 sm:p-5"
               style={{
                 backgroundColor: themeBackground,
                 borderColor: `color-mix(in srgb, ${themeText} 12%, transparent)`,
@@ -720,34 +685,53 @@ export default function BookingSelector({
                 className="text-xs uppercase tracking-wider"
                 style={{ opacity: 0.45 }}
               >
-                Tu turno
+                Resumen del turno
               </p>
 
-              <p className="mt-1 font-semibold">
-                {serviceName}
-              </p>
+              <div className="mt-3 space-y-2 text-sm">
+                <div className="flex items-center justify-between gap-4">
+                  <span style={{ opacity: 0.6 }}>Servicio</span>
+                  <span className="text-right font-medium">
+                    {serviceName}
+                  </span>
+                </div>
 
-              <p
-                className="mt-1 text-sm"
-                style={{ opacity: 0.6 }}
-              >
-                {stringToDate(selectedDate).toLocaleDateString(
-                  "es-AR",
-                  {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                  },
-                )}{" "}
-                · {formatTime(selectedSlot)}
-              </p>
+                <div className="flex items-center justify-between gap-4">
+                  <span style={{ opacity: 0.6 }}>Fecha</span>
+                  <span className="text-right font-medium capitalize">
+                    {stringToDate(selectedDate).toLocaleDateString(
+                      "es-AR",
+                      {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long",
+                      },
+                    )}
+                  </span>
+                </div>
 
-              <p
-                className="mt-2 font-medium"
-                style={{ color: themePrimary }}
-              >
-                ${(priceInCents / 100).toLocaleString("es-AR")}
-              </p>
+                <div className="flex items-center justify-between gap-4">
+                  <span style={{ opacity: 0.6 }}>Hora</span>
+                  <span className="font-medium">
+                    {formatTime(selectedSlot)}
+                  </span>
+                </div>
+
+                <div
+                  className="flex items-center justify-between gap-4 border-t pt-3"
+                  style={{
+                    borderColor: `color-mix(in srgb, ${themeText} 10%, transparent)`,
+                  }}
+                >
+                  <span style={{ opacity: 0.6 }}>Precio</span>
+                  <span
+                    className="text-lg font-semibold"
+                    style={{ color: themePrimary }}
+                  >
+                    ${(priceInCents / 100).toLocaleString("es-AR")}
+                  </span>
+                </div>
+              </div>
             </div>
 
             <button
@@ -760,16 +744,12 @@ export default function BookingSelector({
                 color: themeBackground,
               }}
             >
-              {confirming
-                ? "Confirmando..."
-                : "Confirmar turno"}
+              {confirming ? "Confirmando..." : "Confirmar turno"}
             </button>
           </div>
         )}
 
-        {/* ====================================================
-            CONFIRMADO
-        ==================================================== */}
+        {/* CONFIRMADO */}
 
         {confirmed && (
           <div

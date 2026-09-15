@@ -15,6 +15,7 @@ import {
   getThemeFont,
   getThemeRadius,
 } from "@/lib/business-theme";
+import { ExpandableBusinessGallery } from "./ClientSections";
 
 type Props = {
   params: Promise<{
@@ -39,6 +40,17 @@ export default async function BarberiaPage({ params }: Props) {
       address: true,
       phone: true,
       theme: true,
+
+      photos: {
+        orderBy: {
+          sortOrder: "asc",
+        },
+        select: {
+          id: true,
+          url: true,
+          caption: true,
+        },
+      },
 
       services: {
         where: {
@@ -69,19 +81,18 @@ export default async function BarberiaPage({ params }: Props) {
 
   const radius = getThemeRadius(theme.borderRadius);
   const font = getThemeFont(theme.fontFamily);
-
   const isOutlineButton = theme.buttonStyle === "outline";
 
   return (
     <main
-      className="min-h-screen px-4 py-6 sm:px-6 sm:py-10 lg:px-8"
+      className="min-h-screen px-4 py-4 sm:px-6 sm:py-6 lg:px-8"
       style={{
         backgroundColor: theme.backgroundColor,
         color: theme.textColor,
         fontFamily: font,
       }}
     >
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="mx-auto w-full max-w-5xl">
         {/* Navegación */}
         <Link
           href="/reservar"
@@ -97,7 +108,7 @@ export default async function BarberiaPage({ params }: Props) {
 
         {/* Cabecera principal */}
         <section
-          className="mt-6 overflow-hidden border shadow-sm sm:mt-8"
+          className="mt-4 overflow-hidden border shadow-sm sm:mt-6"
           style={{
             borderRadius: radius,
             borderColor: theme.surfaceColor,
@@ -106,7 +117,7 @@ export default async function BarberiaPage({ params }: Props) {
         >
           {/* Portada */}
           <div
-            className="relative h-56 overflow-hidden sm:h-72 lg:h-80"
+            className="relative h-48 overflow-hidden sm:h-64 lg:h-72"
             style={{
               backgroundColor: theme.backgroundColor,
             }}
@@ -143,32 +154,32 @@ export default async function BarberiaPage({ params }: Props) {
               </div>
             )}
 
-            {/* Degradado inferior para mejorar la lectura visual */}
+            {/* Degradado inferior */}
             <div
               className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
               style={{
                 background:
-                  "linear-gradient(to top, rgba(0,0,0,0.45), transparent)",
+                  "linear-gradient(to top, rgba(0,0,0,0.5), transparent)",
               }}
             />
           </div>
 
-          {/* Información */}
-          <div className="p-6 sm:p-8 lg:p-10">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          {/* Información del negocio */}
+          <div className="p-5 sm:p-8">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl">
                 <div
-                  className="mb-3 flex items-center gap-2 text-xs font-semibold tracking-[0.24em]"
+                  className="mb-2 flex items-center gap-2 text-xs font-semibold tracking-[0.2em]"
                   style={{
                     color: theme.primaryColor,
                   }}
                 >
-                  <Scissors size={15} />
+                  <Scissors size={14} />
                   BARBERÍA
                 </div>
 
                 <h1
-                  className="text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl"
+                  className="text-3xl font-semibold tracking-tight sm:text-4xl"
                   style={{
                     color: theme.primaryColor,
                   }}
@@ -178,9 +189,9 @@ export default async function BarberiaPage({ params }: Props) {
 
                 {business.description && (
                   <p
-                    className="mt-4 max-w-2xl text-sm leading-7 sm:text-base"
+                    className="mt-3 max-w-2xl text-sm leading-relaxed sm:text-base"
                     style={{
-                      opacity: 0.72,
+                      opacity: 0.75,
                     }}
                   >
                     {business.description}
@@ -188,42 +199,32 @@ export default async function BarberiaPage({ params }: Props) {
                 )}
               </div>
 
-              <div className="flex flex-col gap-3 text-sm">
+              <div className="flex flex-col gap-2.5 text-sm">
                 {theme.showAddress && business.address && (
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-2.5">
                     <MapPin
-                      size={17}
+                      size={16}
                       className="mt-0.5 shrink-0"
                       style={{
                         color: theme.primaryColor,
                       }}
                     />
-
-                    <span
-                      style={{
-                        opacity: 0.7,
-                      }}
-                    >
+                    <span style={{ opacity: 0.75 }}>
                       {business.address}
                     </span>
                   </div>
                 )}
 
                 {theme.showPhone && business.phone && (
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5">
                     <Phone
-                      size={17}
+                      size={16}
                       className="shrink-0"
                       style={{
                         color: theme.primaryColor,
                       }}
                     />
-
-                    <span
-                      style={{
-                        opacity: 0.7,
-                      }}
-                    >
+                    <span style={{ opacity: 0.75 }}>
                       {business.phone}
                     </span>
                   </div>
@@ -233,31 +234,39 @@ export default async function BarberiaPage({ params }: Props) {
           </div>
         </section>
 
+        {/* Galería del local */}
+        <ExpandableBusinessGallery
+          photos={business.photos}
+          radius={radius}
+          theme={theme}
+          businessName={business.name}
+        />
+
         {/* Servicios */}
-        <section className="mt-12 sm:mt-16">
-          <div className="mb-6">
+        <section id="servicios" className="mt-8 scroll-mt-6 sm:mt-12">
+          <div className="mb-5">
             <div
-              className="flex items-center gap-2 text-xs font-semibold tracking-[0.24em]"
+              className="flex items-center gap-2 text-xs font-semibold tracking-[0.2em]"
               style={{
                 color: theme.primaryColor,
               }}
             >
-              <Scissors size={15} />
+              <Scissors size={14} />
               SERVICIOS
             </div>
 
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
               Elegí tu servicio
             </h2>
 
             <p
-              className="mt-2 max-w-xl text-sm leading-6"
+              className="mt-1.5 max-w-xl text-sm leading-relaxed"
               style={{
-                opacity: 0.6,
+                opacity: 0.65,
               }}
             >
-              Seleccioná el servicio que querés realizar y elegí el horario
-              disponible.
+              Seleccioná el servicio que querés realizar para ver los turnos
+              disponibles.
             </p>
           </div>
 
@@ -295,14 +304,14 @@ export default async function BarberiaPage({ params }: Props) {
                   }}
                 >
                   <div>
-                    <div className="flex items-start justify-between gap-4">
-                      <h3 className="text-lg font-semibold leading-6">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="text-lg font-semibold leading-tight">
                         {service.name}
                       </h3>
 
                       {theme.showPrices && (
                         <span
-                          className="shrink-0 text-base font-semibold"
+                          className="shrink-0 text-base font-bold"
                           style={{
                             color: theme.primaryColor,
                           }}
@@ -317,9 +326,9 @@ export default async function BarberiaPage({ params }: Props) {
 
                     {service.description && (
                       <p
-                        className="mt-3 text-sm leading-6"
+                        className="mt-2 text-sm leading-relaxed"
                         style={{
-                          opacity: 0.6,
+                          opacity: 0.65,
                         }}
                       >
                         {service.description}
@@ -327,20 +336,20 @@ export default async function BarberiaPage({ params }: Props) {
                     )}
                   </div>
 
-                  <div className="mt-7 flex items-center justify-between gap-4">
+                  <div className="mt-6 flex items-center justify-between gap-4">
                     <div
-                      className="flex items-center gap-2 text-xs"
+                      className="flex items-center gap-1.5 text-xs font-medium"
                       style={{
-                        opacity: 0.55,
+                        opacity: 0.6,
                       }}
                     >
-                      <Clock size={15} />
-                      {service.durationMinutes} minutos
+                      <Clock size={14} />
+                      {service.durationMinutes} min
                     </div>
 
                     <Link
                       href={`/reservar/${business.slug}/${service.id}`}
-                      className="group/button inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition hover:opacity-90"
+                      className="group/button inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition hover:opacity-90"
                       style={{
                         borderRadius: radius,
                         border: `1px solid ${theme.primaryColor}`,
@@ -353,8 +362,9 @@ export default async function BarberiaPage({ params }: Props) {
                       }}
                     >
                       Elegir
+
                       <ArrowRight
-                        size={16}
+                        size={15}
                         className="transition-transform group-hover/button:translate-x-1"
                       />
                     </Link>
@@ -367,7 +377,7 @@ export default async function BarberiaPage({ params }: Props) {
 
         {/* Pie de página */}
         <footer
-          className="mt-14 border-t py-6 text-center text-xs sm:mt-20"
+          className="mt-10 border-t py-6 text-center text-xs sm:mt-14"
           style={{
             borderColor: theme.surfaceColor,
             opacity: 0.5,

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import BarberCard from "./BarberCard";
 
 type Props = {
   params: Promise<{
@@ -44,6 +45,16 @@ export default async function ServicePage({ params }: Props) {
           name: true,
           bio: true,
           imageUrl: true,
+          photos: {
+            orderBy: {
+              sortOrder: "asc",
+            },
+            select: {
+              id: true,
+              url: true,
+              caption: true,
+            },
+          },
         },
       },
     },
@@ -64,7 +75,6 @@ export default async function ServicePage({ params }: Props) {
       }}
     >
       <div className="mx-auto w-full max-w-4xl">
-
         {/* Volver */}
         <Link
           href={`/reservar/${slug}`}
@@ -77,7 +87,7 @@ export default async function ServicePage({ params }: Props) {
         </Link>
 
         {/* Servicio seleccionado */}
-        <div className="mt-8">
+        <section className="mt-8">
           <p
             className="text-sm font-semibold tracking-[0.2em]"
             style={{
@@ -128,9 +138,9 @@ export default async function ServicePage({ params }: Props) {
               ${(service.priceInCents / 100).toLocaleString("es-AR")}
             </span>
           </div>
-        </div>
+        </section>
 
-        {/* Barberos */}
+        {/* Elección de barbero */}
         <section className="mt-12">
           <div className="mb-6">
             <p
@@ -153,7 +163,8 @@ export default async function ServicePage({ params }: Props) {
                   "color-mix(in srgb, var(--theme-text) 55%, transparent)",
               }}
             >
-              Seleccioná quién querés que te atienda.
+              Seleccioná quién querés que te atienda para ver los días y
+              horarios disponibles.
             </p>
           </div>
 
@@ -177,81 +188,13 @@ export default async function ServicePage({ params }: Props) {
               </p>
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-6">
               {business.barbers.map((barber) => (
-                <Link
+                <BarberCard
                   key={barber.id}
-                  href={`/reservar/${slug}/${service.id}/${barber.id}`}
-                  className="group overflow-hidden rounded-2xl border transition duration-200 hover:-translate-y-0.5"
-                  style={{
-                    backgroundColor: "var(--theme-surface)",
-                    borderColor:
-                      "color-mix(in srgb, var(--theme-text) 12%, transparent)",
-                  }}
-                >
-                  <div className="flex items-center gap-5 p-5">
-
-                    {/* Foto */}
-                    <div
-                      className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full"
-                      style={{
-                        backgroundColor:
-                          "color-mix(in srgb, var(--theme-text) 8%, transparent)",
-                      }}
-                    >
-                      {barber.imageUrl ? (
-                        <img
-                          src={barber.imageUrl}
-                          alt={barber.name}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <span
-                          className="text-xl font-semibold"
-                          style={{
-                            color:
-                              "color-mix(in srgb, var(--theme-text) 40%, transparent)",
-                          }}
-                        >
-                          {barber.name.charAt(0).toUpperCase()}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Información */}
-                    <div className="min-w-0 flex-1">
-                      <h3
-                        className="font-semibold transition"
-                        style={{
-                          color: "var(--theme-text)",
-                        }}
-                      >
-                        {barber.name}
-                      </h3>
-
-                      {barber.bio && (
-                        <p
-                          className="mt-1 line-clamp-2 text-sm"
-                          style={{
-                            color:
-                              "color-mix(in srgb, var(--theme-text) 55%, transparent)",
-                          }}
-                        >
-                          {barber.bio}
-                        </p>
-                      )}
-                    </div>
-
-                    <span
-                      className="text-lg transition group-hover:translate-x-1"
-                      style={{
-                        color: "var(--theme-primary)",
-                      }}
-                    >
-                      →
-                    </span>
-                  </div>
-                </Link>
+                  barber={barber}
+                  bookingHref={`/reservar/${slug}/${service.id}/${barber.id}`}
+                />
               ))}
             </div>
           )}

@@ -11,6 +11,12 @@ export default async function ProfesionalesPage() {
   const barbers = await prisma.barber.findMany({
     where: { businessId: session.user.businessId },
     orderBy: { createdAt: "asc" },
+    include: {
+      photos: {
+        orderBy: { sortOrder: "asc" },
+        select: { id: true, url: true, caption: true },
+      },
+    },
   });
 
   return (
@@ -19,8 +25,10 @@ export default async function ProfesionalesPage() {
         id: b.id,
         name: b.name,
         bio: b.bio,
+        specialties: b.specialties,
         imageUrl: b.imageUrl,
         isActive: b.isActive,
+        photos: b.photos,
       }))}
     />
   );

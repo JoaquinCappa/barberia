@@ -69,23 +69,25 @@ export default async function CuentaPage() {
     },
   });
 
+  const now = new Date();
+
   const upcoming = bookings.filter(
     (booking) =>
-      booking.startsAt > new Date() &&
-      booking.status !== "CANCELLED",
+      booking.startsAt.getTime() > now.getTime() &&
+      booking.status !== "CANCELLED" &&
+      booking.status !== "COMPLETED",
   );
 
   const history = bookings.filter(
     (booking) =>
-      booking.startsAt <= new Date() ||
-      booking.status === "CANCELLED",
+      booking.startsAt.getTime() <= now.getTime() ||
+      booking.status === "CANCELLED" ||
+      booking.status === "COMPLETED",
   );
 
   return (
     <main className="min-h-screen bg-stone-950 text-stone-100">
       <div className="mx-auto max-w-4xl px-6 py-10">
-
-        {/* Header */}
         <header className="mb-10 flex items-center justify-between">
           <Link
             href="/"
@@ -102,11 +104,8 @@ export default async function CuentaPage() {
           </Link>
         </header>
 
-        {/* Greeting */}
         <section className="mb-10">
-          <p className="text-sm text-stone-500">
-            Mi cuenta
-          </p>
+          <p className="text-sm text-stone-500">Mi cuenta</p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">
             Hola, {session.user.name?.split(" ")[0] ?? "ahí"}.
@@ -117,12 +116,9 @@ export default async function CuentaPage() {
           </p>
         </section>
 
-        {/* Upcoming */}
         <section>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">
-              Próximos turnos
-            </h2>
+            <h2 className="text-lg font-semibold">Próximos turnos</h2>
 
             <span className="text-sm text-stone-500">
               {upcoming.length}
@@ -138,12 +134,13 @@ export default async function CuentaPage() {
               <p className="mt-2 text-sm text-stone-500">
                 Elegí una barbería para reservar tu próximo turno.
               </p>
+
               <Link
                 href="/reservar"
                 className="mt-6 inline-flex rounded-xl bg-amber-400 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-amber-300"
-                >
+              >
                 Reservar un turno
-                </Link>
+              </Link>
             </div>
           ) : (
             <div className="space-y-3">
@@ -153,7 +150,6 @@ export default async function CuentaPage() {
                   className="rounded-2xl border border-stone-800 bg-stone-900 p-5 transition hover:border-stone-700"
                 >
                   <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-
                     <div>
                       <p className="text-sm font-medium uppercase tracking-wide text-amber-400">
                         {booking.business.name}
@@ -185,7 +181,6 @@ export default async function CuentaPage() {
 
                       <CancelBookingButton bookingId={booking.id} />
                     </div>
-
                   </div>
                 </div>
               ))}
@@ -193,11 +188,8 @@ export default async function CuentaPage() {
           )}
         </section>
 
-        {/* History */}
         <section className="mt-12">
-          <h2 className="mb-4 text-lg font-semibold">
-            Historial
-          </h2>
+          <h2 className="mb-4 text-lg font-semibold">Historial</h2>
 
           {history.length === 0 ? (
             <p className="text-sm text-stone-600">
@@ -234,7 +226,6 @@ export default async function CuentaPage() {
             </div>
           )}
         </section>
-
       </div>
     </main>
   );

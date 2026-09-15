@@ -1,14 +1,19 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
 import { createBarber, deleteBarber, updateBarber } from "@/lib/actions/barbers";
+import BarberGaleriaSection from "./BarberGaleriaSection";
+
+type Photo = { id: string; url: string; caption: string | null };
 
 type Barber = {
   id: string;
   name: string;
   bio: string | null;
+  specialties: string | null;
   imageUrl: string | null;
   isActive: boolean;
+  photos: Photo[];
 };
 
 const inputCls =
@@ -25,10 +30,11 @@ function BarberForm({ onDone, initial }: { onDone: () => void; initial?: Barber 
   const action = initial ? updateBarber : createBarber;
   const [state, formAction, pending] = useActionState(action, null);
 
-  if (state?.success) {
-    onDone();
-    return null;
-  }
+  useEffect(() => {
+    if (state?.success === true) {
+      onDone();
+    }
+  }, [state?.success, onDone]);
 
   return (
     <form action={formAction} className="space-y-3">
@@ -46,17 +52,29 @@ function BarberForm({ onDone, initial }: { onDone: () => void; initial?: Barber 
       </div>
 
       <div>
-        <label className={labelCls}>Bio</label>
-        <input
-          className={inputCls}
+        <label className={labelCls}>Biografía</label>
+        <textarea
+          className="w-full resize-none rounded-lg border border-stone-700 bg-stone-800 px-3 py-2 text-sm text-stone-100 placeholder-stone-500 focus:border-amber-400 focus:outline-none"
           name="bio"
+          rows={3}
           defaultValue={initial?.bio ?? ""}
-          placeholder="Especialidad, años de experiencia…"
+          placeholder="Años de experiencia, formación, estilo…"
         />
       </div>
 
       <div>
-        <label className={labelCls}>URL de foto</label>
+        <label className={labelCls}>Especialidades</label>
+        <input
+          className={inputCls}
+          name="specialties"
+          defaultValue={initial?.specialties ?? ""}
+          placeholder="Ej: Degradado, Corte navaja, Barba"
+        />
+        <p className="mt-1 text-xs text-stone-600">Separadas por coma</p>
+      </div>
+
+      <div>
+        <label className={labelCls}>URL de foto de perfil</label>
         <input
           className={inputCls}
           name="imageUrl"
@@ -85,6 +103,7 @@ function BarberForm({ onDone, initial }: { onDone: () => void; initial?: Barber 
 export default function ProfesionalesClient({ barbers }: { barbers: Barber[] }) {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Barber | null>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Desactivar este profesional?")) return;
@@ -121,37 +140,64 @@ export default function ProfesionalesClient({ barbers }: { barbers: Barber[] }) 
                 {editing?.id === b.id ? (
                   <BarberForm initial={b} onDone={() => setEditing(null)} />
                 ) : (
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      {b.imageUrl ? (
-                        <img
-                          src={b.imageUrl}
-                          alt={b.name}
-                          className="h-10 w-10 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-stone-800 text-sm font-semibold text-amber-400">
-                          {b.name.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <div>
-                        <p className="font-medium">
-                          {b.name}
-                          {!b.isActive && (
-                            <span className="ml-2 text-xs text-stone-500">(inactivo)</span>
+                  <div>
+                    {/* Header row */}
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        {b.imageUrl ? (
+                          <img
+                            src={b.imageUrl}
+                            alt={b.name}
+                            className="h-12 w-12 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-800 text-base font-semibold text-amber-400">
+                            {b.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-medium">
+                            {b.name}
+                            {!b.isActive && (
+                              <span className="ml-2 text-xs text-stone-500">(inactivo)</span>
+                            )}
+                          </p>
+                          {b.specialties && (
+                            <p className="mt-0.5 text-xs text-amber-400/80">{b.specialties}</p>
                           )}
-                        </p>
-                        {b.bio && <p className="text-sm text-stone-400">{b.bio}</p>}
+                          {b.bio && (
+                            <p className="mt-0.5 text-sm text-stone-400 line-clamp-1">{b.bio}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 flex-wrap gap-2">
+                        <button
+                          className={btnSecondary}
+                          onClick={() =>
+                            setExpanded(expanded === b.id ? null : b.id)
+                          }
+                        >
+                          {expanded === b.id ? "Cerrar" : `Trabajos (${b.photos.length})`}
+                        </button>
+                        <button className={btnSecondary} onClick={() => setEditing(b)}>
+                          Editar
+                        </button>
+                        <button
+                          className={btnDanger}
+                          onClick={() => handleDelete(b.id)}
+                        >
+                          Desactivar
+                        </button>
                       </div>
                     </div>
-                    <div className="flex shrink-0 gap-2">
-                      <button className={btnSecondary} onClick={() => setEditing(b)}>
-                        Editar
-                      </button>
-                      <button className={btnDanger} onClick={() => handleDelete(b.id)}>
-                        Desactivar
-                      </button>
-                    </div>
+
+                    {/* Work photos section — expandable */}
+                    {expanded === b.id && (
+                      <BarberGaleriaSection
+                        barberId={b.id}
+                        initialPhotos={b.photos}
+                      />
+                    )}
                   </div>
                 )}
               </div>

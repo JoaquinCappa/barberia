@@ -27,6 +27,7 @@ export async function createBarber(
         businessId,
         name,
         bio: (formData.get("bio") as string | null)?.trim() || null,
+        specialties: (formData.get("specialties") as string | null)?.trim() || null,
         imageUrl: (formData.get("imageUrl") as string | null)?.trim() || null,
       },
     });
@@ -49,6 +50,7 @@ export async function updateBarber(
       data: {
         name: (formData.get("name") as string).trim(),
         bio: (formData.get("bio") as string | null)?.trim() || null,
+        specialties: (formData.get("specialties") as string | null)?.trim() || null,
         imageUrl: (formData.get("imageUrl") as string | null)?.trim() || null,
         isActive: formData.get("isActive") !== "false",
       },
